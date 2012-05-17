@@ -48,6 +48,8 @@ typedef enum {
 
 - (id)initWithNumber:(NSNumber *)number 
              caption:(NSString *)caption;
+- (void)addTouchUpInsideActionWithTarget:(id) target 
+                                selector:(SEL) selector;
 
 @end
 

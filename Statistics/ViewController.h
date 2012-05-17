@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RectCellView.h"
+#import "RectView.h"
 
 @interface ViewController : UIViewController
 

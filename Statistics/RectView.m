@@ -6,8 +6,15 @@
 //  Copyright (c) 2012年 zhenby All rights reserved.
 //
 
-#import "RectCellView.h"
+#import "RectView.h"
 #import <UIKit/UIKit.h>
+
+@interface RectCellView()
+
+@property(retain, nonatomic) id selectorTarget;
+@property(assign, nonatomic) SEL touchUpInsideActionSelector;
+
+@end
 
 @implementation RectCellView
 
@@ -18,6 +25,9 @@
 @synthesize captionFont = _captionFont;
 @synthesize captionTextColor = _captionTextColor;
 @synthesize intervalOfNumberAndCaption = _intervalOfNumberAndCaption;
+
+@synthesize selectorTarget;
+@synthesize touchUpInsideActionSelector;
 
 
 -(void)dealloc
@@ -99,6 +109,23 @@
                                             captionTextVerticalCoord);
     [self.captionTextColor set];
     [self.caption drawAtPoint:captionBeginDrawPoint withFont:self.captionFont];
+}
+
+#pragma - mark public method
+- (void)addTouchUpInsideActionWithTarget:(id) target 
+                                selector:(SEL) selector
+{
+    self.selectorTarget = target;
+    self.touchUpInsideActionSelector = selector;
+}
+
+#pragma - mark RectCellView touch handle
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (nil != self.selectorTarget)
+    {
+        [self.selectorTarget performSelector:self.touchUpInsideActionSelector];
+    }
 }
 
 @end
@@ -309,8 +336,8 @@
 
 - (void)addSubRectCellViewInLoaction:(RectCellLocation) rectCellLocation
 {
-    RectCellView *rectCellView = [self.rectCellViews objectForKey:
-                                     [NSNumber numberWithInt:rectCellLocation]];
+    RectCellView *rectCellView = [[self.rectCellViews objectForKey:
+                                     [NSNumber numberWithInt:rectCellLocation]] retain];
     if (nil != rectCellView)
     {
         rectCellView.frame = [self frameOfRectCellLocation:rectCellLocation];
