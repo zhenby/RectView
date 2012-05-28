@@ -32,7 +32,7 @@
 {
     [super viewDidLoad];
     
-    rectView = [[RectView alloc] initWithFrame:self.view.frame rectLayoutType:QuarterLayout];
+    rectView = [[RectView alloc] initWithFrame:self.view.frame rectLayoutType:BottomHalfLayout];
     
     RectCellView *topLeftRectCellView = [[RectCellView alloc] initWithNumber:
                                          [NSNumber numberWithInt:6] caption:@"总计看过本数"];
@@ -50,14 +50,19 @@
     RectCellView *bottomRightRectCellView = [[RectCellView alloc] initWithNumber:
                                           [NSNumber numberWithInt:15] caption:@"书架书籍总数"];
     bottomRightRectCellView.numberTextColor = [UIColor orangeColor];
-    [bottomRightRectCellView addTouchUpInsideActionWithTarget:self selector:@selector(bottomRightTouch)];
+    [bottomRightRectCellView addTouchUpInsideActionWithTarget:self 
+                                                     selector:@selector(bottomRightTouch)];
+    
+    RectCellView *bottomHalfRectCellView = [[RectCellView alloc] 
+                                            initWithNumber:[NSNumber numberWithInt:105] 
+                                                   caption:@"为阅读奋斗了多少个日夜"];
+    bottomHalfRectCellView.numberTextColor = [UIColor orangeColor];
     
     
     NSDictionary *rectCellViews = [NSDictionary dictionaryWithObjectsAndKeys:
                                    topLeftRectCellView, [NSNumber numberWithInt:TopLeftLocation], 
                                    topRightRectCellView, [NSNumber numberWithInt:TopRightLocation], 
-                                   bottomLeftRectCellView, [NSNumber numberWithInt:BottomLeftLocation], 
-                                   bottomRightRectCellView, [NSNumber numberWithInt:BottomRightLocation], 
+                                   bottomHalfRectCellView, [NSNumber numberWithInt:BottomLocation], 
                                    nil];
     
     rectView.rectCellViews = rectCellViews;
