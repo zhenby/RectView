@@ -10,12 +10,12 @@
 
 @implementation ViewController
 
-@synthesize rectView;
+@synthesize rectView = _rectView;
 
 - (void)dealloc
 {
-    [rectView release];
-    rectView = nil;
+    [_rectView release];
+    _rectView = nil;
     
     [super dealloc];
 }
@@ -32,72 +32,12 @@
 {
     [super viewDidLoad];
     
-    rectView = [[RectView alloc] initWithFrame:self.view.frame rectLayoutType:BottomHalfLayout];
-    
-    RectCellView *topLeftRectCellView = [[RectCellView alloc] initWithNumber:
-                                         [NSNumber numberWithInt:6] caption:@"总计看过本数"];
-    topLeftRectCellView.numberTextColor = [UIColor orangeColor];
-    
-    
-    RectCellView *topRightRectCellView = [[RectCellView alloc] initWithNumber:
-                                         [NSNumber numberWithInt:711] caption:@"总计翻过页数"];
-    topRightRectCellView.numberTextColor = [UIColor orangeColor];
-    
-    RectCellView *bottomLeftRectCellView = [[RectCellView alloc] initWithNumber:
-                                         [NSNumber numberWithFloat:3.6] caption:@"总共阅读小时数"];
-    bottomLeftRectCellView.numberTextColor = [UIColor orangeColor];
-    
-    RectCellView *bottomRightRectCellView = [[RectCellView alloc] initWithNumber:
-                                          [NSNumber numberWithInt:15] caption:@"书架书籍总数"];
-    bottomRightRectCellView.numberTextColor = [UIColor orangeColor];
-    [bottomRightRectCellView addTouchUpInsideActionWithTarget:self 
-                                                     selector:@selector(bottomRightTouch)];
-    
-    RectCellView *bottomHalfRectCellView = [[RectCellView alloc] 
-                                            initWithNumber:[NSNumber numberWithInt:105] 
-                                                   caption:@"为阅读奋斗了多少个日夜"];
-    bottomHalfRectCellView.numberTextColor = [UIColor orangeColor];
-    
-    
-    NSDictionary *rectCellViews = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   topLeftRectCellView, [NSNumber numberWithInt:TopLeftLocation], 
-                                   topRightRectCellView, [NSNumber numberWithInt:TopRightLocation], 
-                                   bottomHalfRectCellView, [NSNumber numberWithInt:BottomLocation], 
-                                   nil];
-    
-    rectView.rectCellViews = rectCellViews;
-    
-    [self.view addSubview:rectView];
-	// Do any additional setup after loading the view, typically from a nib.
+    _rectView = [[RectView alloc] initWithFrame:self.view.frame
+                                rectLayoutType:BottomHalfLayout
+                                      delegate:self];
+    [self.view addSubview:_rectView];
 }
 
-- (void)viewDidUnload
-{
-    [rectView release];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -105,10 +45,47 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-#pragma - mark touch action handle
+#pragma mark - Touch Action Handle
 - (void)bottomRightTouch
 {
     NSLog(@"bottom right touch");
+}
+
+#pragma mark - RectViewDelegate
+- (RectCellView *)rectCellViewInRectView:(RectView *)rectView inLocation:(RectCellLocation)location
+{
+    RectCellView *cellView = nil;
+    switch (location) {
+        case TopLeftLocation:
+        {
+            cellView = [[[RectCellView alloc] initWithNumber:[NSNumber numberWithInt:6]
+                                                     caption:@"总计看过本数"]
+                        autorelease];
+            cellView.numberTextColor = [UIColor orangeColor];
+            break;
+        }
+        case TopRightLocation:
+        {
+            cellView = [[[RectCellView alloc] initWithNumber:[NSNumber numberWithInt:711]
+                                                     caption:@"总计翻过页数"]
+                        autorelease];
+            cellView.numberTextColor = [UIColor orangeColor];
+            break;
+        }
+        case BottomLocation:
+        {
+            cellView = [[[RectCellView alloc] initWithNumber:[NSNumber numberWithInt:105]
+                                                     caption:@"为阅读奋斗了多少个日夜"]
+                        autorelease];
+            cellView.numberTextColor = [UIColor orangeColor];
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    return cellView;
 }
 
 @end

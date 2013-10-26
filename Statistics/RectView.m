@@ -62,8 +62,7 @@
     return self;
 }
 
-- (id)initWithNumber:(NSNumber *)number 
-             caption:(NSString *)caption
+- (id)initWithNumber:(NSNumber *)number caption:(NSString *)caption
 {
     self = [super init];
     if (self) {
@@ -112,8 +111,7 @@
 }
 
 #pragma - mark public method
-- (void)addTouchUpInsideActionWithTarget:(id) target 
-                                selector:(SEL) selector
+- (void)addTouchUpInsideActionWithTarget:(id)target selector:(SEL)selector
 {
     self.selectorTarget = target;
     self.touchUpInsideActionSelector = selector;
@@ -146,22 +144,24 @@
 @implementation RectView
 
 @synthesize rectLayoutType = _rectLayoutType;
-@synthesize rectCellViews;
+@synthesize delegate = _delegate;
 
 - (void)dealloc
 {
-    [rectCellViews release];
-    rectCellViews = nil;
+    _delegate = nil;
     
     [super dealloc];
 }
 
-- (id)initWithFrame:(CGRect)frame rectLayoutType:(RectLayoutType) rectLayoutType
+- (id)initWithFrame:(CGRect)frame
+     rectLayoutType:(RectLayoutType)rectLayoutType
+           delegate:(id<RectViewDelegate>)delegate
 {
     self = [super initWithFrame:frame];
     if (self)
     {
         _rectLayoutType = rectLayoutType;
+        _delegate = delegate;
     }
     
     return self;
@@ -300,53 +300,72 @@
     
     switch (rectCellLocation) {
         case TopRightLocation:
-            rectCellFrame = CGRectMake(halfWidth + DIVIDER_LINE_WIDTH, 0.0f, 
+        {
+            rectCellFrame = CGRectMake(halfWidth + DIVIDER_LINE_WIDTH, 0.0f,
                                        halfWidth, halfHeight - DIVIDER_LINE_WIDTH);
             break;
+        }
         case TopLeftLocation:
-            rectCellFrame = CGRectMake(0.0f, 0.0f, 
+        {
+            rectCellFrame = CGRectMake(0.0f, 0.0f,
                                        halfWidth - DIVIDER_LINE_WIDTH, 
                                        halfHeight - DIVIDER_LINE_WIDTH);
             break;
+        }
         case BottomLeftLocation:
-            rectCellFrame = CGRectMake(0.0f, halfHeight + DIVIDER_LINE_WIDTH, 
+        {
+            rectCellFrame = CGRectMake(0.0f, halfHeight + DIVIDER_LINE_WIDTH,
                                        halfWidth - DIVIDER_LINE_WIDTH, halfHeight);
             break;
+        }
         case BottomRightLocation:
-            rectCellFrame = CGRectMake(halfWidth + DIVIDER_LINE_WIDTH, 
+        {
+            rectCellFrame = CGRectMake(halfWidth + DIVIDER_LINE_WIDTH,
                                        halfHeight + DIVIDER_LINE_WIDTH, 
                                        halfWidth, halfHeight);
             break;
+        }
         case TopLocation:
+        {
             rectCellFrame = CGRectMake(0.0f, 0.0f, width, halfHeight - DIVIDER_LINE_WIDTH);
             break;
+        }
         case BottomLocation:
+        {
             rectCellFrame = CGRectMake(0.0f, halfHeight + DIVIDER_LINE_WIDTH, width, halfHeight);
             break;
+        }
         case RightLocation:
+        {
             rectCellFrame = CGRectMake(halfWidth + DIVIDER_LINE_WIDTH, 0, halfWidth , height);
             break;
+        }
         case LeftLocation:
+        {
             rectCellFrame = CGRectMake(0, 0, halfWidth - DIVIDER_LINE_WIDTH, height);
             break;
+        }
     }
     
     return rectCellFrame;
 }
 
-- (void)addSubRectCellViewInLoaction:(RectCellLocation) rectCellLocation
+- (void)addSubRectCellViewInLoaction:(RectCellLocation)rectCellLocation
 {
-    RectCellView *rectCellView = [[self.rectCellViews objectForKey:
-                                     [NSNumber numberWithInt:rectCellLocation]] retain];
-    if (nil != rectCellView)
+    if ([self.delegate respondsToSelector:@selector(rectCellViewInRectView:inLocation:)])
     {
-        rectCellView.frame = [self frameOfRectCellLocation:rectCellLocation];
-        //rectCellView.backgroundColor = [UIColor whiteColor];
-        [self addSubview:rectCellView];
+        
+        RectCellView *rectCellView = [self.delegate rectCellViewInRectView:self
+                                                                inLocation:rectCellLocation];
+        if (nil != rectCellView)
+        {
+            rectCellView.frame = [self frameOfRectCellLocation:rectCellLocation];
+            [self addSubview:rectCellView];
+        }
     }
 }
 
-- (void)drawDividerLineWithVericalStartPoint:(CGPoint) verticalStartPoint 
+- (void)drawDividerLineWithVericalStartPoint:(CGPoint) verticalStartPoint
                              vericalEndPoint:(CGPoint) verticalEndPoint 
                         horizontalStartPoint:(CGPoint) horizontalStartPoint
                           horizontalEndPoint:(CGPoint) horizontalEndPoint

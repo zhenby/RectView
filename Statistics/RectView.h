@@ -14,24 +14,24 @@
 #define DIVIDER_LINE_WIDTH 0.5
 
 typedef enum {
-    TopRightLocation    = 1,
-	TopLeftLocation     = 2,
-	BottomLeftLocation  = 3,
-	BottomRightLocation = 4,
-    TopLocation         = 5,
-    BottomLocation      = 6,
-    RightLocation       = 7,
-    LeftLocation        = 8
+    TopRightLocation = 0,
+	TopLeftLocation,
+	BottomLeftLocation,
+	BottomRightLocation,
+    TopLocation,
+    BottomLocation,
+    RightLocation,
+    LeftLocation
 } RectCellLocation;
 
 typedef enum {
-    TopHalfLayout       = 1,
-    TopBottomHalfLayout = 2,
-    BottomHalfLayout    = 3,
-    LeftHalfLayout      = 4,
-    LeftRightHalfLayout = 5,
-    RightHalfLayout     = 6,
-    QuarterLayout       = 7
+    TopHalfLayout = 0,
+    TopBottomHalfLayout,
+    BottomHalfLayout,
+    LeftHalfLayout,
+    LeftRightHalfLayout,
+    RightHalfLayout,
+    QuarterLayout
 } RectLayoutType;
 
 @interface RectCellView : UIView
@@ -46,18 +46,26 @@ typedef enum {
 
 @property(assign, nonatomic) int intervalOfNumberAndCaption;
 
-- (id)initWithNumber:(NSNumber *)number 
-             caption:(NSString *)caption;
-- (void)addTouchUpInsideActionWithTarget:(id) target 
-                                selector:(SEL) selector;
+- (id)initWithNumber:(NSNumber *)number caption:(NSString *)caption;
+- (void)addTouchUpInsideActionWithTarget:(id)target selector:(SEL)selector;
+
+@end
+
+
+@class RectView;
+@protocol RectViewDelegate <NSObject>
+
+- (RectCellView *)rectCellViewInRectView:(RectView *)rectView inLocation:(RectCellLocation)location;
 
 @end
 
 @interface RectView : UIView
 
 @property(assign, nonatomic) RectLayoutType rectLayoutType;
-@property(retain, nonatomic) NSDictionary *rectCellViews;
+@property(assign, nonatomic) id<RectViewDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame rectLayoutType:(RectLayoutType) rectLayoutType;
+- (id)initWithFrame:(CGRect)frame
+     rectLayoutType:(RectLayoutType)rectLayoutType
+           delegate:(id<RectViewDelegate>)delegate;
 
 @end

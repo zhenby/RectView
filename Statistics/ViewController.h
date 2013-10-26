@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RectView.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController<RectViewDelegate>
 
 @property(retain, nonatomic) RectView *rectView;
 
